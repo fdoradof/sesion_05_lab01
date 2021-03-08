@@ -1,0 +1,32 @@
+---
+- name: "Laboratorio de Registros"
+  hosts: nodo_01
+  tasks:
+    - name: "Registrar la hora actual del nodo"
+      command: "date +%T"
+      register: hora_actual
+
+    - name: "Cambio de zona horaria"
+      timezone:
+        name: Europe/Moscow
+      register: datos_zona_horaria
+
+    - name: "Creacion de fichero de datos"
+      file:
+        path: "/tmp/datos_horarios_{{ ansible_facts['hostname'] }}.txt"
+        state: touch
+    
+    - name: "Registrar la hora de Moscow"
+      command: "date +%T"
+      register: hora_moscow
+    
+    - name: "Insertar registros en el fichero"
+      blockinfile:
+        path: "/tmp/datos_horarios_{{ ansible_facts['hostname'] }}.txt"
+        block: |
+          La zona horaria antes del cambio es {{ datos_zona_horaria.diff.before.name }} y la hora es {{ hora_actual }}
+          La zona horaria despues del cambio es {{ datos_zona_horaria.diff.after.name }} y la hora es {{ hora_moscow }}
+
+    - name: "Volver a la zona horaria iniciarl"
+      timezone:
+        name: "{{ datos_zona_horaria.diff.before.name }}"
