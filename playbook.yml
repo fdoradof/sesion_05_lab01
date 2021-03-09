@@ -24,8 +24,8 @@
       blockinfile:
         path: "/tmp/datos_horarios_{{ ansible_facts['hostname'] }}.txt"
         block: |
-          La zona horaria antes del cambio es {{ datos_zona_horaria.diff.before.name }} y la hora es {{ hora_actual }}
-          La zona horaria despues del cambio es {{ datos_zona_horaria.diff.after.name }} y la hora es {{ hora_moscow }}
+          La zona horaria antes del cambio es {{ datos_zona_horaria.diff.before.name }} y la hora es {{ hora_actual.stdout_lines }}
+          La zona horaria despues del cambio es {{ datos_zona_horaria.diff.after.name }} y la hora es {{ hora_moscow.stdout_lines }}
 
     - name: "Volver a la zona horaria iniciarl"
       timezone:
